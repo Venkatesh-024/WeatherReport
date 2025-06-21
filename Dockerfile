@@ -1,14 +1,22 @@
-# 1. Use the official OpenJDK image from Docker Hub
-FROM openjdk:21-jdk
+# Use Maven to build the project first
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
-# 2. Set the working directory inside the container
 WORKDIR /app
 
-# 3. Copy the JAR file from your machine into the container
-COPY target/*.jar app.jar
+# Copy the whole project (including pom.xml and src/)
+COPY . .
 
-# 4. Expose port 8080 (Render assigns the port at runtime via $PORT)
+# Build the jar inside Docker
+RUN mvn clean install -DskipTests
+
+# Now use a lightweight OpenJDK image to run the JAR
+FROM openjdk:21-jdk
+
+WORKDIR /app
+
+# Copy built JAR from previous stage
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# 5. Run the app, passing in the assigned PORT dynamically
 CMD ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
