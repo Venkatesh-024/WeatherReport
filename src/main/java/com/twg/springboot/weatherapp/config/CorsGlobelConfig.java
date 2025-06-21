@@ -20,7 +20,8 @@ public class CorsGlobelConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-                            "https://6856a092579051d979a29f1b--lucky-swan-55d5c7.netlify.app",
+                            "https://weatherreport56.netlify.app/",
+                           
                             "http://localhost:5173",
                             "http://192.168.1.14:5173"
                         )
